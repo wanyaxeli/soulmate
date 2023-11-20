@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import SignIn from '../pages/SignIn'
 import Register from '../pages/Register'
 import AuthScreenRoutes from './AuthScreenRotes'
+import HomeScreens from './Screens'
 import MainScreenRouter from './MainScreenRoutes'
 export default function AppRoutes() {
     const stack=createNativeStackNavigator()
@@ -13,7 +14,7 @@ export default function AppRoutes() {
         }} component={AuthScreenRoutes}/>
         <stack.Screen options={{
              headerShown:false
-        }} name='maintabs' component={MainScreenRouter}/>
+        }} name='maintabs' component={HomeScreens}/>
      </stack.Navigator>
   )
 }

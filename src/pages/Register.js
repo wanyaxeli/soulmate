@@ -4,6 +4,9 @@ export default function SignIn({navigation}) {
     const handleToRegister=()=>{
         navigation.navigate('signIn')
     }
+    const handleRegister=()=>{
+        navigation.navigate('interests')
+    }
   return (
    <SafeAreaView style={styles.signInWrapper}>
        <ScrollView>
@@ -53,7 +56,7 @@ export default function SignIn({navigation}) {
                     />
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.signbtnWrapper}>
+                    <TouchableOpacity onPress={handleRegister} style={styles.signbtnWrapper}>
                         <Text style={{color:'#fff',fontSize:20}}>Register</Text>
                     </TouchableOpacity>
                 </View>

@@ -5,8 +5,6 @@ import Home from '../pages/Home'
 import Icon from "react-native-vector-icons/FontAwesome"
 import Likes from '../pages/Likes'
 import Messages from '../pages/Messages'
-import Notifications from '../pages/Notifications'
-import HomeScreens from './Screens'
 export default function MainScreenRouter() {
     const tab=createBottomTabNavigator()
   return (
@@ -29,8 +27,8 @@ export default function MainScreenRouter() {
                 return(
                     <Icon name='home' color={'#7a55e8'} size={30}/>
                 )
-            }
-        }} component={HomeScreens}/>
+            }, 
+        }} component={Home}/>
          <tab.Screen name='Likes'  options={{
             tabBarIcon:()=>{
                 return(
@@ -45,13 +43,6 @@ export default function MainScreenRouter() {
                 )
             }
         }} component={Messages}/>
-         <tab.Screen name='notifications'  options={{
-            tabBarIcon:()=>{
-                return(
-                    <Icon name='bell' color={'#7a55e8'} size={30}/>
-                )
-            }
-        }} component={Notifications}/>
     </tab.Navigator>
   )
 }

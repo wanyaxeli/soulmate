@@ -2,9 +2,12 @@ import { View, Text,Image,TouchableOpacity ,SafeAreaView,ScrollView,StyleSheet} 
 import React from 'react'
 import img from "../assets/images/women3.jpg"
 import Icon from "react-native-vector-icons/FontAwesome"
-export default function About({navigation:{goBack}}) {
+export default function About({navigation:{goBack,navigate}}) {
     const handleGoBack=()=>{
        goBack()
+    }
+    const handleToChat=()=>{
+        navigate("chat")
     }
   return (
     <SafeAreaView style={styles.AboutWrapper}>
@@ -29,10 +32,48 @@ export default function About({navigation:{goBack}}) {
                 </TouchableOpacity>
               </View>
               <View style={[styles.aboutBtn]}>
-                <TouchableOpacity style={[styles.Btn]}>
+                <TouchableOpacity onPress={handleToChat} style={[styles.Btn]}>
                 <Icon name='bookmark-o' color={'#000'} size={22} />
                 </TouchableOpacity>
               </View>
+          </View>
+          <View style={styles.interestsWrapper}>
+             <View style={styles.interests}>
+                <View style={styles.decorator}></View>
+                <Text style={{color:"#fff",textTransform:'capitalize'}}>cooking</Text>
+             </View>
+             <View style={styles.interests}>
+                <View style={styles.decorator}></View>
+                <Text style={{color:"#fff",textTransform:'capitalize'}}>music</Text>
+             </View>
+             <View style={styles.interests}>
+                <View style={styles.decorator}></View>
+                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
+             </View>
+             <View style={styles.interests}>
+                <View style={styles.decorator}></View>
+                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
+             </View>
+             <View style={styles.interests}>
+                <View style={styles.decorator}></View>
+                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
+             </View>
+             <View style={styles.interests}>
+                <View style={styles.decorator}></View>
+                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
+             </View>
+             <View style={styles.interests}>
+                <View style={styles.decorator}></View>
+                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
+             </View>
+             <View style={styles.interests}>
+                <View style={styles.decorator}></View>
+                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
+             </View>
+             <View style={styles.interests}>
+                <View style={styles.decorator}></View>
+                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
+             </View>
           </View>
         </ScrollView>
     </SafeAreaView>
@@ -45,7 +86,7 @@ const styles= StyleSheet.create({
     },
     AboutBannerImg:{
         width:'100%',
-        height:400,
+        height:410,
         borderBottomLeftRadius:40,
         borderBottomRightRadius:40,
         position:"relative"
@@ -101,5 +142,31 @@ const styles= StyleSheet.create({
         alignItems:'center',
         justifyContent:"center",
         padding:5
+    },
+    interestsWrapper:{
+        width:"100%",
+        heighta:'auto',
+        padding:15,
+        marginTop:10,
+        flexDirection:'row',
+        alignItems:'center',
+        gap:10,
+        flexWrap:"wrap"
+    },
+    interests:{
+        width:120,
+        height:50,
+        backgroundColor:'#7a51a2',
+        flexDirection:"row",
+        alignItems:'center',
+        gap:10,
+        paddingHorizontal:5,
+        borderRadius:15
+    },
+    decorator:{
+        width:30,
+        height:30,
+        borderRadius:50,
+        backgroundColor:'#7a55e8'
     }
 })
