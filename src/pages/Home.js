@@ -1,4 +1,4 @@
-import { View, SafeAreaView,ImageBackground,TouchableOpacity,TextInput,Text,StyleSheet,Image } from 'react-native'
+import { View, Pressable,SafeAreaView,ImageBackground,TouchableOpacity,TextInput,Text,StyleSheet,Image } from 'react-native'
 import React from 'react'
 import Icon from "react-native-vector-icons/FontAwesome"
 import {Data} from "../components/Data"
@@ -8,6 +8,9 @@ import Carousel from "react-native-snap-carousel"
 export default function Home({navigation}) {
     const handleToAbout=()=>{
         navigation.navigate("about")
+    }
+    const handleToProfile=()=>{
+        navigation.navigate('profile')
     }
     const renderItem=({item, index}) => {
         return (
@@ -35,10 +38,14 @@ export default function Home({navigation}) {
     <SafeAreaView style={styles.homeRapper}>
         <View>
         <View style={styles.homeHeaderWrapper}>
-           <View style={styles.homeHeaderBarContainer}></View>
            <View style={styles.homeHeaderBarContainer}>
-            <Image style={styles.profileImg} source={img}/>
+           <Icon name='arrow-left' color={'#000'} size={22} />
            </View>
+           <Pressable onPress={handleToProfile}>
+                <View style={styles.homeHeaderBarContainer}>
+                <Image style={styles.profileImg} source={img}/>
+                </View>
+           </Pressable>
         </View>
          <View style={styles.searchBarWrapper}>
           <TouchableOpacity>
@@ -63,22 +70,6 @@ export default function Home({navigation}) {
            sliderWidth={400}
            itemWidth={385}
           />
-          {/* <View style={styles.bannerContainer}>
-           <Image style={styles.imageBanner} source={img1}/>
-           <View style={styles.bannerCover}>
-            <View style={styles.bannerContentWrapper}>
-               <View style={styles.closeBtnWRapper}>
-                <TouchableOpacity>
-                    <Text style={{color:"#000",fontSize:35}}>&times;</Text>
-                </TouchableOpacity>
-               </View>
-               <View style={styles.bannerUserDetailWrapper}>
-                <Text style={{fontSize:30}}>Jane Doe</Text>
-                <Text style={{fontSize:18}}>3km away</Text>
-               </View>
-            </View>
-           </View>
-          </View> */}
          </View>
         </View>
     </SafeAreaView>
@@ -101,7 +92,10 @@ const styles = StyleSheet.create({
         width:50,
         height:50,
         borderRadius:50,
-        backgroundColor:'white'
+        backgroundColor:'white',
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center'
     },
     profileImg:{
         width:"100%",
