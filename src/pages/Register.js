@@ -1,6 +1,8 @@
-import React from 'react'
+import React,{useState} from 'react'
+import {RadioButton}from "react-native-paper"
 import { View,Text,TextInput,ScrollView,TouchableOpacity,StyleSheet,SafeAreaView,KeyboardAvoidingView} from 'react-native'
 export default function SignIn({navigation}) {
+    const [gender,setGender]=useState('Gender')
     const handleToRegister=()=>{
         navigation.navigate('signIn')
     }
@@ -54,6 +56,27 @@ export default function SignIn({navigation}) {
                     secureTextEntry={true}
                     placeholderTextColor={'#fff'}
                     />
+                </View>
+                <View style={styles.genderWrapper}>
+                <Text style={{color:"#fff",fontSize:18,marginTop:-20}}>Gender</Text>
+                <View style={styles.RadioBTnWrapper}>
+                     <View>
+                     <RadioButton
+                    value="Male"
+                    status={ gender === 'Male' ? 'checked' : 'unchecked' }
+                    onPress={() => setGender('Male')}
+                    />
+                    <Text style={{color:"#fff"}}>Male</Text>
+                     </View>
+                    <View>
+                    <RadioButton
+                    value="Female"
+                    status={ gender === 'Female' ? 'checked' : 'unchecked' }
+                    onPress={() => setGender('Female')}
+                    />
+                    <Text style={{color:"#fff"}}>Female</Text>
+                    </View>
+                </View>
                 </View>
                 <View>
                     <TouchableOpacity onPress={handleRegister} style={styles.signbtnWrapper}>
@@ -129,5 +152,16 @@ const styles=StyleSheet.create({
         alignItems:'center',
         width:'100%',
         height:'auto',
+    },
+    genderWrapper:{
+        flexDirection:'row',
+        alignItems:'center' ,
+        justifyContent:"flex-start",
+        gap:40,
+    },
+    RadioBTnWrapper:{
+        flexDirection:'row',
+        alignItems:'center' ,
+        gap:50
     }
 })

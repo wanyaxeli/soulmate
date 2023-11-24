@@ -56,7 +56,6 @@ const styles=StyleSheet.create({
   profileImage:{
     width:150,
     height:150,
-    backgroundColor:'#fff',
     borderRadius:100,
     position:'absolute',
     bottom:-70,
