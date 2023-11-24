@@ -41,7 +41,8 @@ export default function MainScreenRouter() {
                 return(
                     <Icon name='bookmark' color={'#7a55e8'} size={30}/>
                 )
-            }
+            },
+            tabBarBadge: 3
         }} component={Messages}/>
     </tab.Navigator>
   )
