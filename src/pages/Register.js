@@ -1,13 +1,40 @@
 import React,{useState} from 'react'
 import {RadioButton}from "react-native-paper"
 import { View,Text,TextInput,ScrollView,TouchableOpacity,StyleSheet,SafeAreaView,KeyboardAvoidingView} from 'react-native'
+import axios from 'axios'
+
 export default function SignIn({navigation}) {
-    const [gender,setGender]=useState('Gender')
+    const [gender,setGender]=useState('')
+    const initialState={
+        first_name:'',
+        last_name:"",
+        email:'',
+        password:'',
+        confirm_password:''
+    }
+    const [values,setValues]=useState(initialState)
     const handleToRegister=()=>{
         navigation.navigate('signIn')
     }
     const handleRegister=()=>{
-        navigation.navigate('interests')
+        const finalValue={...values,gender}
+        const url='http://10.0.2.2:8000/user/'
+        try{
+            axios.post(url,finalValue,{
+                headers:{'Content-Type':"Application/json"}
+            })
+            .then(res=>{
+                    console.log(res.data)
+                    navigation.navigate('interests')
+            })
+        }
+        catch(error){
+            console.log(error)
+        }
+
+    }
+    const handleChange=(text,name)=>{
+        setValues(pre=>({...pre,[name]:text}))
     }
   return (
    <SafeAreaView style={styles.signInWrapper}>
@@ -25,6 +52,7 @@ export default function SignIn({navigation}) {
                     style={{flex:1,color:'#fff'}}
                     placeholder='First Name'
                     placeholderTextColor={'#fff'}
+                    onChangeText={(text)=>handleChange(text,"first_name")}
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -32,6 +60,7 @@ export default function SignIn({navigation}) {
                     style={{flex:1,color:'#fff'}}
                     placeholder='Last Name'
                     placeholderTextColor={'#fff'}
+                    onChangeText={(text)=>handleChange(text,"last_name")}
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -39,6 +68,7 @@ export default function SignIn({navigation}) {
                     style={{flex:1,color:'#fff'}}
                     placeholder='Email'
                     placeholderTextColor={'#fff'}
+                    onChangeText={(text)=>handleChange(text,"email")}
                     />
                 </View>
                 <View  style={styles.inputContainer}>
@@ -47,6 +77,7 @@ export default function SignIn({navigation}) {
                     placeholder='Password'
                     secureTextEntry={true}
                     placeholderTextColor={'#fff'}
+                    onChangeText={(text)=>handleChange(text,"password")}
                     />
                 </View>
                 <View  style={styles.inputContainer}>
@@ -55,6 +86,7 @@ export default function SignIn({navigation}) {
                     placeholder='Confirm Password'
                     secureTextEntry={true}
                     placeholderTextColor={'#fff'}
+                    onChangeText={(text)=>handleChange(text,"confirm_password")}
                     />
                 </View>
                 <View style={styles.genderWrapper}>

@@ -1,11 +1,33 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { View,Text,TextInput,TouchableOpacity,StyleSheet,SafeAreaView,KeyboardAvoidingView} from 'react-native'
+import axios from 'axios'
 export default function SignIn({navigation}) {
+    const initialState={
+        email:"",
+        password:''
+    }
+    const [value,setValues]=useState(initialState)
     const handleToRegister=()=>{
         navigation.navigate('register')
     }
     const handleLogin=()=>{
-        navigation.navigate('maintabs')
+        // // navigation.navigate('maintabs')
+        // console.log(value)
+        // const url='http://10.0.2.2:8000/api/token'
+        // try{
+        //    axios.post(url,value,{headers:{
+        //     'Content-Type':"Application/json"
+        //    }})
+        //    .then(res=>{
+        //     console.log(res.data)
+        //    })
+        // }
+        // catch(error){
+        //     console.log(error)
+        // }
+    }
+    const handleChange=(text,name)=>{
+        setValues(pre=>({...pre,[name]:text}))
     }
   return (
    <SafeAreaView style={styles.signInWrapper}>
@@ -19,9 +41,10 @@ export default function SignIn({navigation}) {
             <View style={styles.signInInputWrapper}>
                 <View style={styles.inputContainer}>
                     <TextInput 
-                   style={{flex:1,color:'#fff'}}
+                    style={{flex:1,color:'#fff'}}
                     placeholder='Email'
                     placeholderTextColor={'#fff'}
+                    onChangeText={(text)=>handleChange(text,'email')}
                     />
                 </View>
                 <View  style={styles.inputContainer}>
@@ -30,6 +53,7 @@ export default function SignIn({navigation}) {
                     placeholder='Password'
                     secureTextEntry={true}
                     placeholderTextColor={'#fff'}
+                    onChangeText={(text)=>handleChange(text,'password')}
                     />
                 </View>
                 <View>

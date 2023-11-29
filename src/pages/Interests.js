@@ -1,47 +1,56 @@
 import { View, TouchableOpacity,Pressable,Text,StyleSheet,SafeAreaView,ScrollView } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { interests } from '../components/Data'
+import axios from 'axios'
 import Icon from "react-native-vector-icons/FontAwesome"
 export default function Interests({navigation}) {
     const [selectedinterests,SetSelectedInterest]=useState([])
     const [selected,SetSelected]=useState(false)
-    
+    const [error,setError]=useState('')
     const handleSelecltedInterests=(id)=>{
-        let interest=interests.find(item=>item.id === id)
-        if(selectedinterests.length === 0){
-            SetSelectedInterest([interest]) 
-            SetSelected(pre=>({
-                ...pre,[id]:true
-            }))
-        }else{
-            selectedinterests.map(item=>{
-                if (item.id === id){
-                    let Item=selectedinterests.filter(item=>item!==id)
-                    SetSelectedInterest(Item)
-                    SetSelected(pre=>({
-                        ...pre,[id]:false
-                    }))
-                }else{
-                    SetSelectedInterest(pre=>([...pre,interest]))  
-                    SetSelected(pre=>({
-                        ...pre,[id]:true
-                    })) 
-                }
-            })
+        let interest = interests.find((item) => item.id === id);
+
+    SetSelectedInterest((prevSelectedInterests) => {
+        if (prevSelectedInterests.some((item) => item.id === id)) {
+            // If the interest is already selected, remove it
+            return prevSelectedInterests.filter((item) => item.id !== id);
+        } else {
+            // If the interest is not selected, add it
+            return [...prevSelectedInterests, interest];
         }
+    });
+
+    SetSelected((prevSelected) => ({
+        ...prevSelected,
+        [id]: !prevSelected[id], // Toggle the selected state
+    }));
     }
     const handleFinishReg=()=>{
-        navigation.navigate('maintabs')
+        if(selectedinterests.length < 9){
+            setError('You must select 9 interests')
+        }
+        else if(selectedinterests.length > 9){
+            setError('You have  selected more than 9 interests')
+        }
+        else if(selectedinterests.length === 9) {
+            console.log(selectedinterests)
+            try{
+                axios.post()
+            }
+            catch(error){
+                console.log(error)
+            }
+            navigation.navigate('maintabs')
+        }
     }
-    useEffect(()=>{
-      console.log(selectedinterests) 
-    },[selectedinterests])
+
   return (
     <SafeAreaView style={styles.InterestWrapper}>
         <ScrollView style={{flex:1}}>
            <View style={{height:'auto',width:'100%',marginBottom:20}}>
             <Text style={{color:'#fff',fontSize:35}}>Select your interests</Text>
             <Text style={{color:'#fff',fontSize:25,marginTop:10}}>To finish registration</Text>
+            {error && <Text style={{color:'#ff0000',fontSize:15}}>{error}</Text>}
            </View>
            <View style={[styles.interestsContainer,{height:'auto',width:'100%'}]}>
             {interests.map(item=>{
