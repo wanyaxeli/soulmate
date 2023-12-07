@@ -3,47 +3,72 @@ import React,{useState,useEffect} from 'react'
 import { interests } from '../components/Data'
 import axios from 'axios'
 import Icon from "react-native-vector-icons/FontAwesome"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function Interests({navigation}) {
-    const [selectedinterests,SetSelectedInterest]=useState([])
-    const [selected,SetSelected]=useState(false)
+    const[interest,setInterests]=useState([])
+    const [token,setToken]=useState()
     const [error,setError]=useState('')
-    const handleSelecltedInterests=(id)=>{
-        let interest = interests.find((item) => item.id === id);
-
-    SetSelectedInterest((prevSelectedInterests) => {
-        if (prevSelectedInterests.some((item) => item.id === id)) {
-            // If the interest is already selected, remove it
-            return prevSelectedInterests.filter((item) => item.id !== id);
-        } else {
-            // If the interest is not selected, add it
-            return [...prevSelectedInterests, interest];
-        }
-    });
-
-    SetSelected((prevSelected) => ({
-        ...prevSelected,
-        [id]: !prevSelected[id], // Toggle the selected state
-    }));
-    }
-    const handleFinishReg=()=>{
-        if(selectedinterests.length < 9){
+     const handleFinishReg=()=>{
+        if(interest.length < 9){
             setError('You must select 9 interests')
         }
-        else if(selectedinterests.length > 9){
+        else if(interest.length > 9){
             setError('You have  selected more than 9 interests')
         }
-        else if(selectedinterests.length === 9) {
-            console.log(selectedinterests)
+        else if(interest.length === 9) {
+            const url='http://10.0.2.2:8000/interests/'
             try{
-                axios.post()
+                axios.post(url,{interest:JSON.stringify(interest)},{headers:{
+                    'Content-Type':'application/json',
+                    'Authorization':`Bearer ${token}`
+                }})
+                .then(res=>{
+                    console.log(res.data)
+                    navigation.navigate('maintabs')
+                })
             }
             catch(error){
                 console.log(error)
             }
-            navigation.navigate('maintabs')
         }
     }
-
+    const handleSelect = (interestToAdd) => {
+        setInterests((prevInterests) => {
+          const isInterestAlreadySelected = prevInterests.includes(interestToAdd);
+    
+          return isInterestAlreadySelected
+            ? prevInterests.filter((item) => item !== interestToAdd)
+            : [...prevInterests, interestToAdd];
+        });
+      };
+    const renderInterest = (iconName, interestName) => {
+        return (
+          <Pressable onPress={() => handleSelect(interestName)}>
+            <View style={interest.includes(interestName) ? styles.selectedInterests : styles.interest}>
+              <View>
+                <Icon name={iconName} size={20} color={'#000'} />
+              </View>
+              <Text>{interestName}</Text>
+            </View>
+          </Pressable>
+        );
+      };
+    const getToken = async () => {
+        try {
+          const tokenString = await AsyncStorage.getItem('token');
+          if (tokenString) {
+            const token = JSON.parse(tokenString);
+            setToken(token)
+          } else {
+            console.log('Token not found in AsyncStorage');
+          }
+        } catch (error) {
+          console.error('Error retrieving token:', error);
+        }
+      };
+ useEffect(()=>{
+ getToken()
+ },[])
   return (
     <SafeAreaView style={styles.InterestWrapper}>
         <ScrollView style={{flex:1}}>
@@ -53,16 +78,24 @@ export default function Interests({navigation}) {
             {error && <Text style={{color:'#ff0000',fontSize:15}}>{error}</Text>}
            </View>
            <View style={[styles.interestsContainer,{height:'auto',width:'100%'}]}>
-            {interests.map(item=>{
-                return(
-                <Pressable key={item.id} onPress={()=>handleSelecltedInterests(item.id)}>
-                <View style={selected[item.id]?styles.selectedInterests:styles.interest}>
-                <Text style={{color:selected[item.id]?"#fff":"#000"}}>{item.icon}</Text>
-                <Text style={[{color:selected[item.id]?"#fff":"#000",textTransform:'capitalize'}]}>{item.interest}</Text>
-                </View>
-                </Pressable>
-                )
-            })}
+            {renderInterest('headphones', 'Music')}
+            {renderInterest('microphone', 'Singing')}
+            {renderInterest('gamepad', 'gaming')}
+            {renderInterest('file-movie-o', 'Movies')}
+            {renderInterest('microphone', 'Football')}
+            {renderInterest('microphone', 'Swimming')}
+            {renderInterest('shopping-bag', 'Shopping')}
+            {renderInterest('coffee', 'Coffee')}
+            {renderInterest('coffee', 'Basketball')}
+            {renderInterest('coffee', 'Tiktoking')}
+            {renderInterest('coffee', 'Skating')}
+            {renderInterest('coffee', 'Drinking')}
+            {renderInterest('bus', 'Travel')}
+            {renderInterest('car', 'cars')}
+            {renderInterest('coffee', 'Biking')}
+            {renderInterest('fire', 'Cooking')}
+            {renderInterest('coffee', 'Hiking')}
+            {renderInterest('spoon', 'Eating')}
            </View>
            <View style={styles.finishBtnWrapper}>
             <Pressable onPress={handleFinishReg} style={styles.finishBtn}><Text style={{color:"#fff",textAlign:'center',fontSize:25}}>Finish</Text></Pressable>

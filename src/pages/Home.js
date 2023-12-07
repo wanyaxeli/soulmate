@@ -1,22 +1,98 @@
-import { View, Pressable,SafeAreaView,ImageBackground,TouchableOpacity,TextInput,Text,StyleSheet,Image } from 'react-native'
-import React from 'react'
+import { View, Pressable,SafeAreaView,TouchableOpacity,TextInput,Text,StyleSheet,Image } from 'react-native'
+import React,{useState,useEffect} from 'react'
 import Icon from "react-native-vector-icons/FontAwesome"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Data} from "../components/Data"
+import {decode as atob, decode, encode as btoa} from 'base-64'
+import {jwtDecode} from 'jwt-decode'
+import Carousel from "react-native-snap-carousel"
+import axios from 'axios'
 const img = require("../assets/images/man.jpg")
 const img1 = require("../assets/images/women3.jpg")
-import Carousel from "react-native-snap-carousel"
 export default function Home({navigation}) {
-    const handleToAbout=()=>{
-        navigation.navigate("about")
+    const[data,setData]=useState([])
+    const[token,setToken]=useState('')
+    const[user,setUser]=useState({})
+    const [displayData,setDisplayData]=useState([])
+    const handleToAbout=(id)=>{
+        let user=flatDisplayData.find(item=>item.id === id)
+        navigation.navigate("about",{
+            user:user
+        })
     }
     const handleToProfile=()=>{
         navigation.navigate('profile')
     }
+    useEffect(()=>{
+        const url='http://10.0.2.2:8000/users/'
+    try{
+        axios.get(url,{headers:{
+            'Content-Type':'Application/json'
+        }})
+        .then(res=>{
+            setData([res.data])
+        })
+    }
+    catch(error){console.log(error)}
+    },[])
+    const getUser=()=>{
+        if (token) {
+            try {
+            let base64Url = token.split('.')[1];
+            let base64 = base64Url.replace('-', '+').replace('_', '/');
+            const decodedToken = JSON.parse(decode(base64));
+            const {user_id}=decodedToken
+            let url =`http://10.0.2.2:8000/users/${user_id}`
+            axios.get(url,{headers:{
+                'Authorization':`Bearer ${token}`,
+                'Content-Type':'Application/json'
+            }})
+            .then(res=>{
+                const {gender,id}=res.data
+                console.log(id)
+                setUser({gender:gender,id:id})
+            })
+            } catch (error) {
+              console.error('Error decoding token:', error);
+            }
+          } else {
+            console.error('Token is missing or invalid.');
+          }
+    }
+    const getToken = async () => {
+        try {
+          const tokenString = await AsyncStorage.getItem('token');
+          if (tokenString) {
+            const token = JSON.parse(tokenString);
+            setToken(token)
+          } else {
+            console.log('Token not found in AsyncStorage');
+          }
+        } catch (error) {
+          console.error('Error retrieving token:', error);
+        }
+      };
+
+    const displayUser=()=>{
+    const flatData=data.flat()
+    const item=flatData.filter(item=>item.id !==user.id && item.gender !==user.gender)
+    console.log(item)
+    setDisplayData([item])
+    }
+    
+    useEffect(()=>{
+      displayUser()
+    },[data])
+    useEffect(()=>{
+       getUser()
+       getToken()
+    },[])
+    const flatDisplayData=displayData.flat()
     const renderItem=({item, index}) => {
         return (
-        <TouchableOpacity onPress={handleToAbout}>
-            <View  style={styles.bannerContainer}>
-               <Image style={styles.imageBanner} source={item.img}/>
+        <Pressable onPress={()=>handleToAbout(item.id)}>
+            <View style={styles.bannerContainer}>
+               <Image style={styles.imageBanner} source={img1}/>
                 <View style={styles.bannerCover}>
                     <View style={styles.bannerContentWrapper}>
                     <View style={styles.closeBtnWRapper}>
@@ -25,13 +101,13 @@ export default function Home({navigation}) {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.bannerUserDetailWrapper}>
-                        <Text  style={{fontSize:28,textTransform:'capitalize'}}>{item.name}</Text>
-                        <Text style={{fontSize:18}}>{item.distance}</Text>
+                        <Text  style={{fontSize:25,textTransform:'capitalize'}}>{`${item.first_name} ${item.last_name}`}</Text>
+                        <Text style={{fontSize:18}}>3km away</Text>
                     </View>
                     </View>
                 </View>
             </View>
-        </TouchableOpacity>
+        </Pressable>
         );
     }
   return (
@@ -64,7 +140,7 @@ export default function Home({navigation}) {
             </TouchableOpacity>
           </View>
           <Carousel 
-           data={Data} 
+           data={flatDisplayData} 
            layout={'stack'}
            renderItem={renderItem}
            sliderWidth={400}

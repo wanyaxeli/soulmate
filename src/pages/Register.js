@@ -2,7 +2,7 @@ import React,{useState} from 'react'
 import {RadioButton}from "react-native-paper"
 import { View,Text,TextInput,ScrollView,TouchableOpacity,StyleSheet,SafeAreaView,KeyboardAvoidingView} from 'react-native'
 import axios from 'axios'
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function SignIn({navigation}) {
     const [gender,setGender]=useState('')
     const initialState={
@@ -18,13 +18,15 @@ export default function SignIn({navigation}) {
     }
     const handleRegister=()=>{
         const finalValue={...values,gender}
-        const url='http://10.0.2.2:8000/user/'
+        const url='http://10.0.2.2:8000/users/'
         try{
             axios.post(url,finalValue,{
                 headers:{'Content-Type':"Application/json"}
             })
             .then(res=>{
-                    console.log(res.data)
+                    const{access_token}=res.data
+                    console.log(access_token)
+                    AsyncStorage.setItem('token',JSON.stringify(access_token))
                     navigation.navigate('interests')
             })
         }

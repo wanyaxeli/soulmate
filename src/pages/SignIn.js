@@ -1,6 +1,7 @@
 import React,{useState} from 'react'
 import { View,Text,TextInput,TouchableOpacity,StyleSheet,SafeAreaView,KeyboardAvoidingView} from 'react-native'
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function SignIn({navigation}) {
     const initialState={
         email:"",
@@ -11,20 +12,24 @@ export default function SignIn({navigation}) {
         navigation.navigate('register')
     }
     const handleLogin=()=>{
-        // // navigation.navigate('maintabs')
-        // console.log(value)
-        // const url='http://10.0.2.2:8000/api/token'
-        // try{
-        //    axios.post(url,value,{headers:{
-        //     'Content-Type':"Application/json"
-        //    }})
-        //    .then(res=>{
-        //     console.log(res.data)
-        //    })
-        // }
-        // catch(error){
-        //     console.log(error)
-        // }
+       
+        console.log(value)
+        const url='http://10.0.2.2:8000/api/token/'
+        try{
+           axios.post(url,value,{headers:{
+            'Content-Type':"Application/json"
+           }})
+           .then(res=>{
+            console.log(res.data)
+            const {access}=res.data
+            console.log(access)
+            AsyncStorage.setItem('token',JSON.stringify(access))
+            navigation.navigate('maintabs')
+           })
+        }
+        catch(error){
+            console.log(error)
+        }
     }
     const handleChange=(text,name)=>{
         setValues(pre=>({...pre,[name]:text}))

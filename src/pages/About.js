@@ -1,14 +1,53 @@
 import { View, Text,Image,TouchableOpacity ,SafeAreaView,ScrollView,StyleSheet} from 'react-native'
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import img from "../assets/images/women3.jpg"
 import Icon from "react-native-vector-icons/FontAwesome"
-export default function About({navigation:{goBack,navigate}}) {
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+export default function About({route,navigation:{goBack,navigate}}) {
+  const [token,setToken]=useState()
+  const [interest,setInterests]=useState()
+  const {user}=route.params
+  console.log(user)
+  const {id}=user
     const handleGoBack=()=>{
        goBack()
     }
     const handleToChat=()=>{
         navigate("chat")
     }
+    const getToken = async () => {
+      try {
+        const tokenString = await AsyncStorage.getItem('token');
+        if (tokenString) {
+          const token = JSON.parse(tokenString);
+          setToken(token)
+        } else {
+          console.log('Token not found in AsyncStorage');
+        }
+      } catch (error) {
+        console.error('Error retrieving token:', error);
+      }
+    };
+  useEffect(()=>{
+    getToken()
+  },[])
+  useEffect(()=>{
+    const url=`http://10.0.2.2:8000/interests/${id}`
+    try{
+      axios.get(url,{headers:{
+        'Authorization':`Bearer ${token}`,
+        'Content-Type':'Application/json'
+    }})
+      .then(res=>{
+        console.log(JSON.parse(res.data))
+      })
+    }
+    catch(error){
+      console.log(error)
+    }
+  },[token])
+  console.log(interest)
   return (
     <SafeAreaView style={styles.AboutWrapper}>
         <ScrollView style={{flex:1}}>
@@ -38,6 +77,7 @@ export default function About({navigation:{goBack,navigate}}) {
               </View>
           </View>
           <View style={styles.interestsWrapper}>
+            {interest}
              <View style={styles.interests}>
                 <View style={styles.decorator}></View>
                 <Text style={{color:"#fff",textTransform:'capitalize'}}>cooking</Text>
