@@ -6,15 +6,14 @@ import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function About({route,navigation:{goBack,navigate}}) {
   const [token,setToken]=useState()
-  const [interest,setInterests]=useState()
+  const [interests,setInterests]=useState()
   const {user}=route.params
-  console.log(user)
   const {id}=user
     const handleGoBack=()=>{
        goBack()
     }
     const handleToChat=()=>{
-        navigate("chat")
+        navigate("chat",{user:user})
     }
     const getToken = async () => {
       try {
@@ -29,25 +28,27 @@ export default function About({route,navigation:{goBack,navigate}}) {
         console.error('Error retrieving token:', error);
       }
     };
+    const fetchData = async () => {
+      const url = `http://10.0.2.2:8000/interests/${id}`;
+      try {
+        const response = await axios.get(url, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const{interest}=response.data
+        setInterests(JSON.parse(interest))
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
   useEffect(()=>{
     getToken()
   },[])
   useEffect(()=>{
-    const url=`http://10.0.2.2:8000/interests/${id}`
-    try{
-      axios.get(url,{headers:{
-        'Authorization':`Bearer ${token}`,
-        'Content-Type':'Application/json'
-    }})
-      .then(res=>{
-        console.log(JSON.parse(res.data))
-      })
-    }
-    catch(error){
-      console.log(error)
-    }
-  },[token])
-  console.log(interest)
+    fetchData()
+  },[token,user])
   return (
     <SafeAreaView style={styles.AboutWrapper}>
         <ScrollView style={{flex:1}}>
@@ -77,43 +78,14 @@ export default function About({route,navigation:{goBack,navigate}}) {
               </View>
           </View>
           <View style={styles.interestsWrapper}>
-            {interest}
-             <View style={styles.interests}>
-                <View style={styles.decorator}></View>
-                <Text style={{color:"#fff",textTransform:'capitalize'}}>cooking</Text>
-             </View>
-             <View style={styles.interests}>
-                <View style={styles.decorator}></View>
-                <Text style={{color:"#fff",textTransform:'capitalize'}}>music</Text>
-             </View>
-             <View style={styles.interests}>
-                <View style={styles.decorator}></View>
-                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
-             </View>
-             <View style={styles.interests}>
-                <View style={styles.decorator}></View>
-                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
-             </View>
-             <View style={styles.interests}>
-                <View style={styles.decorator}></View>
-                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
-             </View>
-             <View style={styles.interests}>
-                <View style={styles.decorator}></View>
-                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
-             </View>
-             <View style={styles.interests}>
-                <View style={styles.decorator}></View>
-                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
-             </View>
-             <View style={styles.interests}>
-                <View style={styles.decorator}></View>
-                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
-             </View>
-             <View style={styles.interests}>
-                <View style={styles.decorator}></View>
-                <Text style={{color:"#fff",textTransform:'capitalize'}}>dancing</Text>
-             </View>
+            {interests? interests.map((item,i)=>{
+               return(
+                <View key={i} style={styles.interests}>
+                  <View style={styles.decorator}></View>
+                  <Text style={{color:"#fff",textTransform:'capitalize'}}>{item}</Text>
+              </View>
+               )
+            }):<Text>Loading ...</Text>}
           </View>
         </ScrollView>
     </SafeAreaView>

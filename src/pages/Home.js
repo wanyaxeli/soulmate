@@ -49,7 +49,7 @@ export default function Home({navigation}) {
             }})
             .then(res=>{
                 const {gender,id}=res.data
-                console.log(id)
+                console.log(gender)
                 setUser({gender:gender,id:id})
             })
             } catch (error) {
@@ -74,17 +74,23 @@ export default function Home({navigation}) {
       };
 
     const displayUser=()=>{
-    const flatData=data.flat()
-    const item=flatData.filter(item=>item.id !==user.id && item.gender !==user.gender)
-    console.log(item)
-    setDisplayData([item])
+        try {
+            const flatData = data.flat();
+            const items = flatData.filter(item => item.id !== user.id && item.gender !== user.gender);
+            console.log(items);
+            setDisplayData([items]);
+          } catch (error) {
+            console.error('Error in displayUser:', error);
+          }
     }
     
     useEffect(()=>{
       displayUser()
-    },[data])
+    },[data,token,user])
     useEffect(()=>{
-       getUser()
+        getUser()
+      },[token])
+    useEffect(()=>{
        getToken()
     },[])
     const flatDisplayData=displayData.flat()
